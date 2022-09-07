@@ -1,0 +1,192 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Cairo, sans-serif;
+  background-image: linear-gradient(rgb(240, 240, 240), rgb(130, 173, 202));
+  background-size: cover;
+}
+.tools {
+  display: flex;
+  background-color: #333;
+  height: 80px;
+  padding: 10px;
+}
+.tools .clear-all {
+  background-color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 24px;
+  padding: 8px 20px;
+  cursor: pointer;
+}
+.notes {
+  background-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0)
+    ),
+    url("https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80");
+  background-position: center;
+  background-size: cover;
+  background-attachment: fixed;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 50px;
+  padding: 50px;
+  min-height: 100vh;
+  perspective: 2000px;
+  overflow: hidden;
+}
+.notes .note {
+  max-height: 700px;
+  min-height: 350px;
+  max-width: 100%;
+  min-width: 300px;
+  border-radius: 5px;
+  resize: both;
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: max-content 1fr 60px 60px;
+  opacity: 0;
+  transform: translateZ(-1000px);
+  transition: opacity 0.5s, transform 0.5s, background-color 1s;
+}
+.notes .note.animate {
+  opacity: 1;
+  transform: translateZ(0);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.notes .note img {
+  width: 70px;
+  position: absolute;
+  top: 0;
+  right: -20px;
+  transform: translateX(-50%);
+}
+.notes .note .title {
+  font-size: 24px;
+  padding: 20px;
+  grid-column: 1/3;
+  outline: none;
+  overflow: hidden;
+  text-transform: capitalize;
+}
+.notes .note .title.glow {
+  animation: glow 1s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff,
+      0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff;
+  }
+
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff,
+      0 0 60px #fff, 0 0 70px #fff, 0 0 80px #fff;
+  }
+}
+.notes .note .content {
+  background-image: url("https://www.tilingtextures.com/wp-content/uploads/2018/11/0066-512x512.jpg");
+  background-position: center;
+  background-size: auto;
+  padding: 20px;
+  padding-left: 38px;
+  font-size: 23px;
+  grid-column: 1/-1;
+  outline: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.164);
+  border-top: 1px solid rgba(0, 0, 0, 0.164);
+  color: #333;
+}
+.notes .note .date {
+  padding: 20px;
+  grid-column: 1/2;
+  align-self: center;
+  color: #ddd;
+  font-size: 15px;
+}
+.notes .note .date i {
+  margin-right: 7px;
+}
+.notes .note .delete {
+  padding: 20px;
+  grid-column: 2/3;
+  justify-self: end;
+  align-self: center;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.notes .note .delete:hover {
+  transform: scale(0.9);
+  color: #ddd;
+}
+.note .colors {
+  grid-column: 1/3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 10px;
+  padding: 5px 10px 20px 10px;
+}
+.note .colors .color {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.note .colors .color.active {
+  border: 1px solid #ddd;
+}
+.add {
+  position: fixed;
+  bottom: 60px;
+  right: 60px;
+  width: 100px;
+  height: 100px;
+  background-color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.4s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 50px;
+  background: #eae7ea;
+  box-shadow: inset 0.2rem 0.2rem 1rem #eae7ea,
+    inset -0.2rem -0.2rem 1rem #b4b4b4, 0.3rem 0.3rem 0.6rem #eae7ea,
+    -0.2rem -0.2rem 0.5rem #fff;
+
+  color: #133606;
+}
+.add::before,
+.add::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 50px;
+  width: 5px;
+  background-color: #000;
+  border-radius: 10px;
+}
+.add::after {
+  transform: translate(-50%, -50%) rotateZ(90deg);
+}
+.add:hover {
+  transform: scale(1.05);
+}
+.add:active {
+  /* transform: scale(0.98); */
+  box-shadow: inset 0.2rem 0.2rem 1rem #b4b4b4,
+    inset -0.2rem -0.2rem 1rem #eae7ea;
+}
