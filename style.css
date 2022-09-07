@@ -9,6 +9,21 @@ body {
   background-image: linear-gradient(rgb(240, 240, 240), rgb(130, 173, 202));
   background-size: cover;
 }
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #373b44;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #4286f4;
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #919192;
+}
 .tools {
   display: flex;
   background-color: #333;
@@ -24,12 +39,9 @@ body {
   cursor: pointer;
 }
 .notes {
-  background-image: linear-gradient(
-      to right,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 0)
-    ),
-    url("https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80");
+  background: #373b44;
+  background: -webkit-linear-gradient(to right, #4286f4, #373b44);
+  background: linear-gradient(to right, #4286f4, #373b44);
   background-position: center;
   background-size: cover;
   background-attachment: fixed;
@@ -42,10 +54,23 @@ body {
   perspective: 2000px;
   overflow: hidden;
 }
+.notes .note-wrapper {
+  width: auto;
+  height: auto;
+  opacity: 0;
+  transform: translateZ(-1000px);
+  transition: opacity 0.5s, transform 0.5s, background-color 1s;
+  cursor: move;
+}
+.notes .note-wrapper.animate {
+  opacity: 1;
+  transform: translateZ(0);
+  transition: opacity 0.5s, transform 0.5s;
+}
 .notes .note {
   max-height: 700px;
   min-height: 350px;
-  max-width: 100%;
+  max-width: 700px;
   min-width: 300px;
   border-radius: 5px;
   resize: both;
@@ -55,15 +80,12 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: max-content 1fr 60px 60px;
-  opacity: 0;
-  transform: translateZ(-1000px);
-  transition: opacity 0.5s, transform 0.5s, background-color 1s;
 }
-.notes .note.animate {
-  opacity: 1;
-  transform: translateZ(0);
-  transition: opacity 0.5s, transform 0.5s;
+
+.notes .note.over {
+  animation: bounce 2s infinite alternate linear;
 }
+
 .notes .note img {
   width: 70px;
   position: absolute;
@@ -78,21 +100,12 @@ body {
   outline: none;
   overflow: hidden;
   text-transform: capitalize;
+  cursor: text;
 }
 .notes .note .title.glow {
   animation: glow 1s ease-in-out infinite alternate;
 }
-@keyframes glow {
-  from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff,
-      0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff;
-  }
 
-  to {
-    text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff,
-      0 0 60px #fff, 0 0 70px #fff, 0 0 80px #fff;
-  }
-}
 .notes .note .content {
   background-image: url("https://www.tilingtextures.com/wp-content/uploads/2018/11/0066-512x512.jpg");
   background-position: center;
@@ -101,10 +114,12 @@ body {
   padding-left: 38px;
   font-size: 23px;
   grid-column: 1/-1;
+  width: 101%;
   outline: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.164);
   border-top: 1px solid rgba(0, 0, 0, 0.164);
   color: #333;
+  cursor: text;
 }
 .notes .note .date {
   padding: 20px;
@@ -153,7 +168,6 @@ body {
   right: 60px;
   width: 100px;
   height: 100px;
-  background-color: #fff;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.4s;
@@ -161,32 +175,76 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 50px;
-  background: #eae7ea;
-  box-shadow: inset 0.2rem 0.2rem 1rem #eae7ea,
-    inset -0.2rem -0.2rem 1rem #b4b4b4, 0.3rem 0.3rem 0.6rem #eae7ea,
-    -0.2rem -0.2rem 0.5rem #fff;
-
-  color: #133606;
+  background-color: #fff;
+  box-shadow: inset 0.2rem 0.2rem 1rem #ffffff,
+    inset -0.2rem -0.2rem 1rem #565656, 0.3rem 0.3rem 0.6rem #333334,
+    -0.2rem -0.2rem 0.5rem #373b44;
 }
 .add::before,
 .add::after {
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   height: 50px;
   width: 5px;
-  background-color: #000;
+  background-color: #333;
   border-radius: 10px;
+  transition: all 0.5s;
 }
 .add::after {
   transform: translate(-50%, -50%) rotateZ(90deg);
 }
-.add:hover {
-  transform: scale(1.05);
+/* .add:hover {
+  animation: bounce 1.5s infinite alternate linear;
+} */
+.add:hover::before,
+.add:hover::after {
+  animation: grow 1.5s infinite alternate linear;
 }
 .add:active {
   /* transform: scale(0.98); */
-  box-shadow: inset 0.2rem 0.2rem 1rem #b4b4b4,
-    inset -0.2rem -0.2rem 1rem #eae7ea;
+  box-shadow: inset 0.2rem 0.2rem 1rem #ffffff,
+    inset -0.2rem -0.2rem 1rem #565656, 0.3rem 0.3rem 0.6rem #000,
+    -0.2rem -0.2rem 0.5rem #000;
+  color: #fff;
+}
+
+/* Animations */
+@keyframes bounce {
+  0% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff,
+      0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff;
+  }
+
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff,
+      0 0 60px #fff, 0 0 70px #fff, 0 0 80px #fff;
+  }
+}
+@keyframes grow {
+  0% {
+    height: 50px;
+    background-color: #dd8811;
+  }
+  50% {
+    height: 40px;
+    background-color: #7a2459;
+  }
+  100% {
+    height: 50px;
+    background-color: #1f7174;
+  }
 }

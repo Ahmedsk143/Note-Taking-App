@@ -16,7 +16,7 @@ addBtn.addEventListener("click", () => {
     title: "",
     content: "",
     date: Date.now(),
-    background: "#256a0b",
+    background: "#004830",
   };
   addNote(newNote, true);
 });
@@ -30,40 +30,42 @@ addBtn.addEventListener("click", () => {
 
 // Create and attach the notes to the dom
 function addNote(newNote, focus) {
-  const note = document.createElement("div");
+  const noteWrapper = document.createElement("div");
   const titleText = newNote.title == "" ? "add title" : newNote.title;
   const contentText = newNote.content == "" ? "add content" : newNote.content;
   const date = new Date(newNote.date).toDateString();
   const background = newNote.background;
-  note.classList.add("note");
+  noteWrapper.classList.add("note-wrapper");
   setTimeout(() => {
-    note.classList.add("animate");
+    noteWrapper.classList.add("animate");
   }, 15);
-  note.style.backgroundColor = background;
-  note.dataset.back = background;
-  note.innerHTML = `
-      <div class="title" contenteditable="true">${titleText}</div>
-      <div class="content" contenteditable="true">${contentText}</div>
-      <div class="date" data-date="${new Date()}"><i class="fa-solid fa-clock"></i>${date}</div>
-      <div class="delete"><i class="fa-regular fa-trash-can"></i></div>
-      <div class="colors">
-        <div class="color" data-color="#dd8811" style="background-color:#dd8811;"></div>
-        <div class="color" data-color="#b0b90e" style="background-color:#b0b90e;"></div>
-        <div class="color" data-color="#7a2459" style="background-color:#7a2459;"></div>
-        <div class="color" data-color="#1f7174" style="background-color:#1f7174;"></div>
-        <div class="color" data-color="#955e10" style="background-color:#955e10;"></div>
-        <div class="color" data-color="#256a0b" style="background-color:#256a0b;"></div>
+  noteWrapper.draggable = true;
+  noteWrapper.innerHTML = `
+  <div class="note">
+     <div class="title" contenteditable="true">${titleText}</div>
+        <div class="content" contenteditable="true">${contentText}</div>
+        <div class="date" data-date="${new Date()}"><i class="fa-solid fa-clock"></i>${date}</div>
+        <div class="delete"><i class="fa-regular fa-trash-can"></i></div>
+        <div class="colors">
+          <div class="color" data-color="#003060" style="background-color:#003060;"></div>
+          <div class="color" data-color="#a89000" style="background-color:#a89000;"></div>
+          <div class="color" data-color="#7a2459" style="background-color:#7a2459;"></div>
+          <div class="color" data-color="#1f7174" style="background-color:#1f7174;"></div>
+          <div class="color" data-color="#a83018" style="background-color:#a83018;"></div>
+          <div class="color" data-color="#004830" style="background-color:#004830;"></div>
+        </div>
       </div>
     `;
-  note.addEventListener("resize", (e) => {
-    e.target.width;
-    console.log("e.target.width");
-  });
-  notesContainer.appendChild(note);
+  const note = noteWrapper.querySelector(".note");
   const titleEl = note.querySelector(".title");
   const contentEl = note.querySelector(".content");
   const deleteEl = note.querySelector(".delete");
   const colors = note.querySelectorAll(".colors .color");
+
+  note.style.backgroundColor = background;
+  note.dataset.back = background;
+  notesContainer.appendChild(noteWrapper);
+
   if (titleText == "add title") {
     titleEl.classList.add("glow");
   } else {
@@ -92,9 +94,9 @@ function addNote(newNote, focus) {
     }
   });
   deleteEl.addEventListener("click", () => {
-    note.classList.remove("animate");
+    noteWrapper.classList.remove("animate");
     setTimeout(() => {
-      note.remove();
+      noteWrapper.remove();
       updateLocal();
     }, 500);
   });
@@ -115,7 +117,57 @@ function addNote(newNote, focus) {
     });
   });
   updateLocal();
+  noteWrapper.addEventListener("dragstart", dragstart_handler);
+  noteWrapper.addEventListener("dragover", dragover_handler);
+  noteWrapper.addEventListener("dragenter", dragenter_handler);
+  noteWrapper.addEventListener("dragleave", dragleave_handler);
+  noteWrapper.addEventListener("dragend", dragend_handler);
+  noteWrapper.addEventListener("drop", drop_handler);
 }
+
+let enterTarget = null; // to help identify the correct element
+let dragSrcEl = null; //
+
+function dragstart_handler(e) {
+  this.style.opacity = "0.4";
+  dragSrcEl = this;
+  console.log(dragSrcEl);
+  e.dataTransfer.effectAllowed = "move";
+  e.dataTransfer.setData("text/html", this.innerHTML);
+}
+function dragover_handler(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+  console.log(" dragover_handler");
+  return false;
+}
+function dragenter_handler(e) {
+  enterTarget = e.target;
+  this.classList.add("over");
+  console.log(" dragenter_handler ");
+}
+function dragleave_handler(e) {
+  e.preventDefault();
+  if (enterTarget == e.target) {
+    this.classList.remove("over");
+  }
+  console.log(" dragleave_handler ");
+}
+function dragend_handler(e) {
+  console.log(" dragend_handler ");
+  this.style.opacity = "1";
+}
+function drop_handler(e) {
+  e.stopPropagation();
+  if (dragSrcEl !== this) {
+    dragSrcEl.innerHTML = this.innerHTML;
+    this.innerHTML = e.dataTransfer.getData("text/html");
+  }
+  this.classList.remove("over");
+  updateLocal();
+  return false;
+}
+
 function updateLocal() {
   notesArray = [];
   const allNotes = document.querySelectorAll(".note");
@@ -124,7 +176,6 @@ function updateLocal() {
     const content = note.querySelector(".content").textContent;
     const date = note.querySelector(".date").getAttribute("data-date");
     const background = note.getAttribute("data-back");
-
     const newNote = { title, content, date, background };
     notesArray.push(newNote);
   });
