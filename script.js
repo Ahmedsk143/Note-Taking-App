@@ -1,3 +1,4 @@
+// Global variables
 const notesContainer = document.querySelector(".notes");
 const addBtn = document.querySelector(".add");
 const body = document.querySelector("body");
@@ -10,6 +11,8 @@ const gradients = document.querySelectorAll(
 );
 let notesArray = JSON.parse(localStorage.getItem("notes"));
 let theme = localStorage.getItem("theme");
+
+// Construct data from local storage
 if (notesArray && notesArray.length != 0) {
   notesArray.forEach((note) => {
     addNote(note, false);
@@ -25,6 +28,7 @@ if (notesArray && notesArray.length != 0) {
   addNote(newNote, false);
 }
 
+// Background gradients
 gradients.forEach((grad) => {
   if (theme) {
     body.className = theme;
@@ -51,11 +55,12 @@ function removeGradientActive() {
     grad.classList.remove("active");
   });
 }
+
+// Search functionality
 searchIcon.addEventListener("click", () => {
   searchInput.focus();
   searchBox.classList.add("active");
 });
-
 searchInput.addEventListener("keyup", function (e) {
   const notesArrayDom = document.querySelectorAll(".notes .note-wrapper");
   e.preventDefault();
@@ -88,7 +93,7 @@ clearBtn.addEventListener("click", () => {
   localStorage.removeItem("notes");
 });
 
-// Create and attach the notes to the dom
+// Create and append the notes to the dom
 function addNote(newNote, focus) {
   const noteWrapper = document.createElement("div");
   const titleText = newNote.title == "" ? "add title" : newNote.title;
@@ -124,6 +129,8 @@ function addNote(newNote, focus) {
 
   note.style.backgroundColor = background;
   note.dataset.back = background;
+
+  // focus happens when it is a new note
   setTimeout(() => {
     if (focus) {
       titleEl.focus();
@@ -132,6 +139,7 @@ function addNote(newNote, focus) {
     }
   }, 1);
 
+  // Add placeholder
   if (titleText == "add title") {
     titleEl.classList.add("placeholder");
   } else {
@@ -142,8 +150,7 @@ function addNote(newNote, focus) {
   } else {
     contentEl.classList.remove("placeholder");
   }
-  // Focus the note when it is added by the add button
-
+  // title and content event listeners
   titleEl.addEventListener("keyup", (e) => {
     updateLocal();
   });
@@ -169,6 +176,7 @@ function addNote(newNote, focus) {
       updateLocal();
     }, 400);
   });
+  // Changing notes color
   colors.forEach((color) => {
     if (color.getAttribute("data-color") == note.getAttribute("data-back")) {
       color.classList.add("active");
@@ -187,6 +195,7 @@ function addNote(newNote, focus) {
     });
   });
 
+  // Drag and drop functionalities
   noteWrapper.addEventListener("dragstart", dragstart_handler);
   noteWrapper.addEventListener("dragover", dragover_handler);
   noteWrapper.addEventListener("dragenter", dragenter_handler);
@@ -236,6 +245,7 @@ function drop_handler(e) {
   return false;
 }
 
+// Fetching from Local storage
 function updateLocal() {
   notesArray = [];
   const allNotes = document.querySelectorAll(".note");

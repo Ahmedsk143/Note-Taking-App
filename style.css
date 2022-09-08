@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
+
+/**** Base styles */
 * {
   margin: 0;
   box-sizing: border-box;
@@ -6,9 +8,6 @@
 
 body {
   font-family: Cairo, sans-serif;
-  /* background-position: center;
-  background-size: cover;
-  background-attachment: fixed; */
   min-height: 100vh;
 }
 ::-webkit-scrollbar {
@@ -26,6 +25,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #919192;
 }
+/****End of base styles */
+
+/**** Header styles */
 .tools {
   display: flex;
   flex-wrap: wrap;
@@ -45,13 +47,14 @@ body {
   margin-right: 40px;
   transition: all 0.4s;
 }
+/* Clear btn */
 .tools .clear-btn i {
   margin-right: 7px;
 }
 .tools .clear-btn:hover {
   transform: scale(0.8);
 }
-/* Search 3 */
+/*Search box*/
 .search-box {
   position: relative;
   overflow: hidden;
@@ -108,6 +111,7 @@ body {
     transform: rotate(360deg);
   }
 }
+/* Background gradients */
 .tools .back-changer {
   color: #fff;
   display: flex;
@@ -148,7 +152,6 @@ body.g2,
 .search-box .s-icon.g2 {
   background: linear-gradient(to right, #43cea2, #185a9d);
 }
-
 .tools .back-changer .gradients .gradient.g-3,
 body.g3,
 .tools .clear-btn.g3,
@@ -167,7 +170,7 @@ body.g5,
 .search-box .s-icon.g5 {
   background: linear-gradient(to right, #fc5c7d, #6a82fb);
 }
-
+/*** Header media queries */
 @media (max-width: 632px) {
   .tools {
     padding: 15px;
@@ -184,6 +187,9 @@ body.g5,
     column-gap: 5px;
   }
 }
+/**** End of header styles  */
+
+/*** Notes styling */
 .notes {
   display: flex;
   flex-wrap: wrap;
@@ -220,17 +226,8 @@ body.g5,
   grid-template-columns: 1fr 1fr;
   grid-template-rows: max-content 1fr 60px 60px;
 }
-
 .notes .note.over {
   animation: bounce 2s infinite alternate linear;
-}
-
-.notes .note img {
-  width: 70px;
-  position: absolute;
-  top: 0;
-  right: -20px;
-  transform: translateX(-50%);
 }
 .notes .note .title {
   font-size: 24px;
@@ -242,10 +239,8 @@ body.g5,
   cursor: text;
 }
 .notes .note .title.placeholder {
-  /* animation: glow 1s ease-in-out infinite alternate; */
   color: rgba(255, 255, 255, 0.502);
 }
-
 .notes .note .content {
   background-image: url("https://www.tilingtextures.com/wp-content/uploads/2018/11/0066-512x512.jpg");
   background-position: center;
@@ -283,7 +278,6 @@ body.g5,
   cursor: pointer;
   transition: all 0.3s;
 }
-
 .notes .note .delete:hover {
   transform: scale(0.9);
   color: #ddd;
@@ -305,6 +299,9 @@ body.g5,
 .note .colors .color.active {
   border: 1px solid #ddd;
 }
+/*** End of notes styles */
+
+/*** Add new style */
 .add {
   position: fixed;
   bottom: 60px;
@@ -353,6 +350,8 @@ body.g5,
     -0.2rem -0.2rem 0.5rem #000;
   color: #fff;
 }
+
+/* Notes media queries */
 @media (max-width: 550px) {
   .notes {
     padding: 50px 10px;
@@ -367,12 +366,12 @@ body.g5,
   .add::after {
     height: 30px;
   }
-
   .add:hover::before,
   .add:hover::after {
     animation: none;
   }
 }
+
 /* Animations */
 @keyframes bounce {
   0% {
@@ -383,17 +382,6 @@ body.g5,
   }
   100% {
     transform: scale(1);
-  }
-}
-@keyframes glow {
-  from {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff,
-      0 0 50px #fff, 0 0 60px #fff, 0 0 70px #fff;
-  }
-
-  to {
-    text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff,
-      0 0 60px #fff, 0 0 70px #fff, 0 0 80px #fff;
   }
 }
 @keyframes grow {
