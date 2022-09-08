@@ -17,7 +17,6 @@
 
 Check it out live here https://noty-red.vercel.app/
 
-Source code https://github.com/Ahmedsk143/Note-Taking-App
-
+Techonlogy: HTML%, CSS#, Javascript, Fontawesome, Googlefonts
 
 
