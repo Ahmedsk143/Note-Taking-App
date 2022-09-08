@@ -1,15 +1,73 @@
 const notesContainer = document.querySelector(".notes");
 const addBtn = document.querySelector(".add");
-const clearBtn = document.querySelector(".clear-all");
+const body = document.querySelector("body");
+const clearBtn = document.querySelector(".tools .clear-btn");
+const searchBox = document.querySelector(".search-box");
+const searchInput = document.querySelector(".search-box .s-input");
+const searchIcon = document.querySelector(".search-box .s-icon");
+const gradients = document.querySelectorAll(
+  ".tools .back-changer .gradients .gradient"
+);
 let notesArray = JSON.parse(localStorage.getItem("notes"));
-// get data from local storage and update the dom
-if (notesArray) {
+let theme = localStorage.getItem("theme");
+if (notesArray && notesArray.length != 0) {
   notesArray.forEach((note) => {
     addNote(note, false);
   });
 } else {
   notesArray = [];
+  const newNote = {
+    title: "",
+    content: "",
+    date: Date.now(),
+    background: "#004830",
+  };
+  addNote(newNote, false);
 }
+
+gradients.forEach((grad) => {
+  body.className = theme;
+  clearBtn.className = "clear-btn " + theme;
+  searchIcon.className = "s-icon " + theme;
+  removeGradientActive();
+  setTimeout(function () {
+    if (grad.getAttribute("data-g") == theme) {
+      grad.classList.add("active");
+    }
+  }, 1);
+  grad.addEventListener("click", function () {
+    body.className = grad.getAttribute("data-g");
+    clearBtn.className = "clear-btn " + grad.getAttribute("data-g");
+    searchIcon.className = "s-icon " + grad.getAttribute("data-g");
+    removeGradientActive();
+    grad.classList.add("active");
+    localStorage.setItem("theme", grad.getAttribute("data-g"));
+  });
+});
+function removeGradientActive() {
+  gradients.forEach((grad) => {
+    grad.classList.remove("active");
+  });
+}
+searchIcon.addEventListener("click", () => {
+  searchInput.focus();
+  searchBox.classList.add("active");
+});
+
+searchInput.addEventListener("keyup", function (e) {
+  const notesArrayDom = document.querySelectorAll(".notes .note-wrapper");
+  e.preventDefault();
+  const searchTerm = e.target.value.toLowerCase();
+  notesArrayDom.forEach(function (item) {
+    const itemTitle = item.querySelector(".title").textContent;
+    if (itemTitle.toLowerCase().indexOf(searchTerm) != -1) {
+      item.style.display = "block";
+    } else {
+      item.style.display = "none";
+    }
+  });
+});
+
 // Add new note
 addBtn.addEventListener("click", () => {
   const newNote = {
@@ -22,11 +80,11 @@ addBtn.addEventListener("click", () => {
 });
 
 // Clear all notes
-// clearBtn.addEventListener("click", () => {
-//   notesArray = [];
-//   notesContainer.innerHTML = "";
-//   localStorage.removeItem("notes");
-// });
+clearBtn.addEventListener("click", () => {
+  notesArray = [];
+  notesContainer.innerHTML = "";
+  localStorage.removeItem("notes");
+});
 
 // Create and attach the notes to the dom
 function addNote(newNote, focus) {
@@ -38,7 +96,7 @@ function addNote(newNote, focus) {
   noteWrapper.classList.add("note-wrapper");
   setTimeout(() => {
     noteWrapper.classList.add("animate");
-  }, 15);
+  }, 1);
   noteWrapper.draggable = true;
   noteWrapper.innerHTML = `
   <div class="note">
@@ -64,25 +122,33 @@ function addNote(newNote, focus) {
 
   note.style.backgroundColor = background;
   note.dataset.back = background;
-  notesContainer.appendChild(noteWrapper);
+  setTimeout(() => {
+    if (focus) {
+      titleEl.focus();
+      titleEl.textContent = "";
+      titleEl.classList.remove("placeholder");
+    }
+  }, 1);
 
   if (titleText == "add title") {
-    titleEl.classList.add("glow");
+    titleEl.classList.add("placeholder");
   } else {
-    titleEl.classList.remove("glow");
+    titleEl.classList.remove("placeholder");
+  }
+  if (contentText == "add content") {
+    contentEl.classList.add("placeholder");
+  } else {
+    contentEl.classList.remove("placeholder");
   }
   // Focus the note when it is added by the add button
-  if (focus) {
-    titleEl.textContent = "";
-    titleEl.focus();
-  }
+
   titleEl.addEventListener("keyup", (e) => {
     updateLocal();
   });
   titleEl.addEventListener("keypress", (e) => {
     if (e.target.textContent == "add title") {
       e.target.textContent = "";
-      e.target.classList.remove("glow");
+      e.target.classList.remove("placeholder");
     }
   });
   contentEl.addEventListener("keyup", (e) => {
@@ -91,6 +157,7 @@ function addNote(newNote, focus) {
   contentEl.addEventListener("keypress", (e) => {
     if (e.target.textContent == "add content") {
       e.target.textContent = "";
+      e.target.classList.remove("placeholder");
     }
   });
   deleteEl.addEventListener("click", () => {
@@ -98,7 +165,7 @@ function addNote(newNote, focus) {
     setTimeout(() => {
       noteWrapper.remove();
       updateLocal();
-    }, 500);
+    }, 400);
   });
   colors.forEach((color) => {
     if (color.getAttribute("data-color") == note.getAttribute("data-back")) {
@@ -113,48 +180,47 @@ function addNote(newNote, focus) {
       note.dataset.back = bk;
       note.style.backgroundColor = bk;
       note.style.transition = "background-color 0.5s";
+
       updateLocal();
     });
   });
-  updateLocal();
+
   noteWrapper.addEventListener("dragstart", dragstart_handler);
   noteWrapper.addEventListener("dragover", dragover_handler);
   noteWrapper.addEventListener("dragenter", dragenter_handler);
   noteWrapper.addEventListener("dragleave", dragleave_handler);
   noteWrapper.addEventListener("dragend", dragend_handler);
   noteWrapper.addEventListener("drop", drop_handler);
+
+  notesContainer.appendChild(noteWrapper);
+  updateLocal();
 }
 
 let enterTarget = null; // to help identify the correct element
-let dragSrcEl = null; //
+let dragSrcEl = null; // to stop transfer if it is droped on itself
 
 function dragstart_handler(e) {
   this.style.opacity = "0.4";
   dragSrcEl = this;
-  console.log(dragSrcEl);
   e.dataTransfer.effectAllowed = "move";
   e.dataTransfer.setData("text/html", this.innerHTML);
 }
 function dragover_handler(e) {
   e.preventDefault();
-  e.dataTransfer.dropEffect = "move";
-  console.log(" dragover_handler");
   return false;
 }
 function dragenter_handler(e) {
   enterTarget = e.target;
   this.classList.add("over");
-  console.log(" dragenter_handler ");
 }
 function dragleave_handler(e) {
   e.preventDefault();
+  // Remove only if the enter target == the leave target
   if (enterTarget == e.target) {
     this.classList.remove("over");
   }
-  console.log(" dragleave_handler ");
 }
 function dragend_handler(e) {
-  console.log(" dragend_handler ");
   this.style.opacity = "1";
 }
 function drop_handler(e) {
