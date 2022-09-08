@@ -26,15 +26,17 @@ if (notesArray && notesArray.length != 0) {
 }
 
 gradients.forEach((grad) => {
-  body.className = theme;
-  clearBtn.className = "clear-btn " + theme;
-  searchIcon.className = "s-icon " + theme;
-  removeGradientActive();
-  setTimeout(function () {
-    if (grad.getAttribute("data-g") == theme) {
-      grad.classList.add("active");
-    }
-  }, 1);
+  if (theme) {
+    body.className = theme;
+    clearBtn.className = "clear-btn " + theme;
+    searchIcon.className = "s-icon " + theme;
+    removeGradientActive();
+    setTimeout(function () {
+      if (grad.getAttribute("data-g") == theme) {
+        grad.classList.add("active");
+      }
+    }, 1);
+  }
   grad.addEventListener("click", function () {
     body.className = grad.getAttribute("data-g");
     clearBtn.className = "clear-btn " + grad.getAttribute("data-g");
