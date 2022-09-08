@@ -17,6 +17,6 @@
 
 Check it out live here https://noty-red.vercel.app/
 
-Techonlogy: HTML%, CSS#, Javascript, Fontawesome, Googlefonts
+Techonlogy: HTML5, CSS3, Javascript, Fontawesome, Googlefonts
 
 
