@@ -259,6 +259,3 @@ function updateLocal() {
   });
   localStorage.setItem("notes", JSON.stringify(notesArray));
 }
-document.addEventListener("click", () => {
-  document.querySelector("audio").play();
-});
