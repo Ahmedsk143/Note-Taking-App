@@ -1,5 +1,8 @@
 # Note-Taking-App
- 
+
+## Demo 
+
+![Captured by Ahmed Khalil 371](https://user-images.githubusercontent.com/52580137/189429507-d0436680-df35-49f3-b5f0-b3cafd4c1990.png)
 
 ## It is a colorful note-taking app with some nice features
 
